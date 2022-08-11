@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.bbs.board.dao.BbsDao">
+	<select id="getList" parameterType="com.bbs.board.dto.BbsDto"  resultType="com.bbs.board.dto.BbsDto">
+		select
+			seq, title, user, count(*) OVER() maxCnt
+		from 
+			tb_bbs
+		order by seq desc
+		limit #{startPage}, #{ppc}
+	</select>
+	
+	<insert id="addDoc" parameterType="com.bbs.board.dto.BbsDto">
+		insert into tb_bbs (
+			title
+			, user
+			, detl
+			, fileuuid
+			, filename
+		) values (
+			#{title}
+			, #{user}
+			, #{detl}
+			, #{fileuuid}
+			, #{filename}
+		)
+	</insert>
+	
+	<select id="getSearchList"  parameterType="com.bbs.board.dto.BbsDto" resultType="com.bbs.board.dto.BbsDto">
+		select
+			seq, title, user
+		from 
+			tb_bbs
+		where 
+			title like concat('%', #{title}, '%')
+	</select>
+	
+	<select id="getDetail"  parameterType="com.bbs.board.dto.BbsDto" resultType="com.bbs.board.dto.BbsDto">
+		select
+			seq, title, user, detl, filename, fileuuid
+		from 
+			tb_bbs
+		where 
+			seq = #{seq}
+	</select>
+	
+	<update id = "revDoc" 	parameterType="com.bbs.board.dto.BbsDto">
+		update tb_bbs set
+			title = #{title}
+			, user = #{user}
+			, detl = #{detl}
+		where
+			seq = #{seq}
+	</update>
+	
+	<select id="getFileInfo"  parameterType="com.bbs.board.dto.BbsDto" resultType="com.bbs.board.dto.BbsDto">
+		select
+			seq, filename, fileuuid
+		from 
+			tb_bbs
+		where 
+			fileuuid = #{fileuuid} and seq = #{seq}
+	</select>
+	
+</mapper>
